@@ -17,3 +17,4 @@ Route::get('/', function () {
 
 Route::post('create-category', 'CategoryController@create')->name('create');
 Route::post('store', 'CategoryController@store')->name('store');
+Route::get('categories', 'CategoryController@categories')->name('categories');

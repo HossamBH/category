@@ -7,10 +7,6 @@ use App\Models\Category;
 
 class CategoryController extends Controller
 {
-    public function __constract()
-    {
-        $this->middleware(function ($request, $next) { Talk::setAuthUserId(Auth::user()->id); return $next($request); });
-    }
     /**
      * Display a listing of the resource.
      *
@@ -28,10 +24,30 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $categories = Category::all();
-        return view('create', compact('categories'));
+        return view('create');
     }
 
+
+    public function categories(Request $request)
+    {
+        if ($request->ajax())
+        {
+            $categories = Category::all();
+            $output = '<option value="0">--Category--</option>';
+            if($categories->count() > 0)
+            {
+                foreach ($categories as $category)
+                {
+                    $output .= '
+                        <option value="' . $category->id . '">' . $category->name . '</option>';
+                }
+            }
+        $data = array(
+        'select_data'  => $output,
+        );
+        echo json_encode($data);
+        }
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -40,7 +56,6 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $categories = Category::all();
         $category = Category::create($request->all());
 
         if ($category)
